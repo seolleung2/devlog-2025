@@ -18,27 +18,44 @@
 
 ## 개발 체크리스트
 
-### 1. 프로젝트 초기 설정
+### 1. 프로젝트 초기 설정 ✅
 
 - [x] 프로젝트 구조 설정 (components, pages, hooks 등)
+  - components, routes, lib 등 기본 폴더 구조 구성
+  - ESLint, TypeScript 설정
 - [x] Firebase 초기 설정 및 연동
+  - Firebase 프로젝트 생성
+  - 환경 변수 설정
 - [x] 기본 라우팅 설정
+  - React Router DOM 설정
+  - 주요 라우트 구성 (/blog/_, /auth/_, /admin/\*)
 - [x] 공통 레이아웃 구성
+  - RootLayout 컴포넌트 생성
+  - Header, Footer 기본 구조
 
-### 2. CI/CD 설정
+### 2. CI/CD 설정 ✅
 
-- [ ] GitHub Actions 설정
-  - [ ] TypeScript 타입 체크
-  - [ ] ESLint 검사
-  - [ ] 빌드 검증
-  - [ ] 테스트 자동화 (추후 추가)
-- [ ] 배포 자동화 설정 (Firebase Hosting)
+- [x] GitHub Actions CI 설정
+  - TypeScript 타입 체크
+  - ESLint 검사
+  - 빌드 검증
+  - PR 시 자동 검사
+- [x] Firebase Hosting 배포 자동화
+  - PR 시 프리뷰 배포
+  - main 브랜치 머지 시 자동 배포
+  - GitHub Actions 워크플로우 구성
 
-### 3. 인증 시스템
+### 3. 인증 시스템 (진행 중)
 
 - [ ] Firebase Authentication 설정
-- [ ] 로그인/로그아웃 기능
-- [ ] 관리자 권한 설정
+  - Google 로그인 설정
+  - 관리자 계정 설정
+- [ ] 인증 상태 관리
+  - 전역 상태 관리
+  - 인증 훅 구현
+- [ ] 권한 관리
+  - 관리자 전용 페이지 보호
+  - 인증 필요 기능 제한
 
 ### 4. 메인 화면
 
