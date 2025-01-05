@@ -1,5 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import { RootLayout } from "@/components/layout/RootLayout";
+import PrivateRoute from "@/components/features/PrivateRoute";
 
 import LoginPage from "./auth/LoginPage";
 import RegisterPage from "./auth/RegisterPage";
@@ -32,6 +33,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "admin",
+        element: (
+          <PrivateRoute>
+            <Outlet />
+          </PrivateRoute>
+        ),
         children: [
           { path: "dashboard", element: <DashboardPage /> },
           { path: "posts", element: <PostManagePage /> },
