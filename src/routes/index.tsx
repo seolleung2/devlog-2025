@@ -1,5 +1,5 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { RootLayout } from "@/components/layout/RootLayout";
+import RootLayout from "@/components/layout/RootLayout";
 import PrivateRoute from "@/components/features/PrivateRoute";
 
 import LoginPage from "./auth/LoginPage";
@@ -10,13 +10,14 @@ import BlogPostPage from "./blog/BlogPostPage";
 
 import DashboardPage from "./admin/DashboardPage";
 import PostManagePage from "./admin/PostManagePage";
+import HomePage from "./home/HomePage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     children: [
-      { index: true, element: <BlogListPage /> },
+      { index: true, element: <HomePage /> },
       {
         path: "auth",
         children: [
