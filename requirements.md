@@ -49,7 +49,9 @@
 
 - [x] Firebase Authentication 설정
   - [x] Google 로그인 설정
-  - [ ] 관리자 계정 설정
+  - [x] 관리자 계정 설정
+    - [x] Firestore에 관리자 이메일 저장
+    - [x] 관리자 권한 확인 로직 구현
 - [x] 인증 상태 관리
   - [x] AuthContext 구현
   - [x] AuthProvider 구현
@@ -58,7 +60,6 @@
   - [x] AuthButton 컴포넌트 구현
   - [x] 헤더에 인증 버튼 추가
 - [ ] 권한 관리
-  - [ ] 관리자 권한 확인 로직 구현
   - [ ] PrivateRoute 컴포넌트 구현
   - [ ] 관리자 전용 페이지 보호
   - [ ] 인증 필요 기능 제한
