@@ -66,26 +66,6 @@ export default function Header() {
     </div>
   );
 
-  const MobileNav = () => (
-    <div
-      className={`overflow-hidden transition-[height,opacity] duration-300 ease-in-out ${isMenuOpen ? "h-[180px] opacity-100" : "h-0 opacity-0"} `}
-    >
-      <nav className="flex flex-col p-4">
-        {GENERAL_LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            className="px-4 py-2 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-primary"
-          >
-            {link.label}
-          </a>
-        ))}
-        <AuthButton variant="menu" />
-        <div className="border-b pt-2" />
-      </nav>
-    </div>
-  );
-
   const ActionIcons = () => (
     <div className="flex items-center gap-1">
       <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
@@ -125,7 +105,25 @@ export default function Header() {
           {!isDesktop && <MobileHeader />}
         </div>
 
-        {!isDesktop && <MobileNav />}
+        {!isDesktop && (
+          <div
+            className={`overflow-hidden transition-[height,opacity] duration-300 ease-in-out ${isMenuOpen ? "h-[180px] opacity-100" : "h-0 opacity-0"} `}
+          >
+            <nav className="flex flex-col p-4">
+              {GENERAL_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-primary"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <AuthButton variant="menu" />
+              <div className="border-b pt-2" />
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
