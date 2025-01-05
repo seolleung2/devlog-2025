@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Rss, Search, Sun, Volume2, X } from "lucide-react";
 import { useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { cn } from "@/lib/utils";
 
 const GENERAL_LINKS = [
   { label: "소개", href: "/about" },
@@ -90,7 +91,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl">
-        <div className="px-4">
+        <div className={cn(!isDesktop && "px-4")}>
           <div className="flex h-14 items-center justify-between border-b md:h-16">
             <a
               href="/"
