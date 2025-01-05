@@ -1,13 +1,16 @@
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
-import Footer from "./Footer";
 
-export function RootLayout() {
+import Footer from "./Footer";
+import Header from "./Header";
+
+export default function RootLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="container mx-auto flex-1 px-4 py-8">
-        <Outlet />
+      <main className="w-full flex-1 px-4 py-8 md:py-12">
+        <div className="mx-auto max-w-7xl">
+          <Outlet />
+        </div>
       </main>
       <Footer />
     </div>
