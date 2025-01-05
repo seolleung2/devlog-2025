@@ -45,17 +45,23 @@
   - main 브랜치 머지 시 자동 배포
   - GitHub Actions 워크플로우 구성
 
-### 3. 인증 시스템 (진행 중)
+### 3. 인증 시스템
 
-- [ ] Firebase Authentication 설정
-  - Google 로그인 설정
-  - 관리자 계정 설정
-- [ ] 인증 상태 관리
-  - 전역 상태 관리
-  - 인증 훅 구현
+- [x] Firebase Authentication 설정
+  - [x] Google 로그인 설정
+  - [ ] 관리자 계정 설정
+- [x] 인증 상태 관리
+  - [x] AuthContext 구현
+  - [x] AuthProvider 구현
+  - [x] useAuth 훅 구현
+- [x] 로그인/로그아웃 UI 구현
+  - [x] AuthButton 컴포넌트 구현
+  - [x] 헤더에 인증 버튼 추가
 - [ ] 권한 관리
-  - 관리자 전용 페이지 보호
-  - 인증 필요 기능 제한
+  - [ ] 관리자 권한 확인 로직 구현
+  - [ ] PrivateRoute 컴포넌트 구현
+  - [ ] 관리자 전용 페이지 보호
+  - [ ] 인증 필요 기능 제한
 
 ### 4. 메인 화면
 
