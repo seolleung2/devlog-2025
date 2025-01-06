@@ -11,6 +11,7 @@ import BlogPostPage from "./blog/BlogPostPage";
 import DashboardPage from "./admin/DashboardPage";
 import PostManagePage from "./admin/PostManagePage";
 import HomePage from "./home/HomePage";
+import WritePage from "./admin/WritePage";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "dashboard", element: <DashboardPage /> },
           { path: "posts", element: <PostManagePage /> },
+          { path: "write", element: <WritePage /> },
         ],
       },
     ],
