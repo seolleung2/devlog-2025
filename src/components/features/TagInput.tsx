@@ -67,7 +67,8 @@ export default function TagInput({
     <div
       className={cn(
         "flex flex-wrap gap-1",
-        "items-center rounded-md border border-input bg-background",
+        "rounded-md border border-input bg-background",
+        "h-9 items-center",
         className,
       )}
     >
