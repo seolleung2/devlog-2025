@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 
+import { Toaster } from "@/components/ui/toaster";
 import Footer from "./Footer";
 import Header from "./Header";
 import WriteButton from "../features/WriteButton";
@@ -15,6 +16,7 @@ export default function RootLayout() {
       </main>
       <Footer />
       <WriteButton />
+      <Toaster />
     </div>
   );
 }
