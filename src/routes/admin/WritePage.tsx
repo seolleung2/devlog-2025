@@ -135,22 +135,20 @@ export default function WritePage() {
               />
               {thumbnail ? (
                 <div
-                  className="flex h-full cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 hover:bg-accent hover:text-accent-foreground"
+                  className="group relative h-full cursor-pointer overflow-hidden rounded-md border border-input hover:bg-accent"
                   onClick={() => setShowThumbnailDialog(true)}
                 >
-                  <div className="relative flex h-full flex-1 items-center">
-                    <img
-                      src={thumbnail}
-                      alt="썸네일 미리보기"
-                      className="max-h-[68px] w-auto rounded object-contain"
-                    />
-                  </div>
+                  <img
+                    src={thumbnail}
+                    alt="썸네일 미리보기"
+                    className="h-full w-full rounded-md object-cover"
+                  />
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       removeThumbnail();
                     }}
-                    className="flex-shrink-0 text-muted-foreground hover:text-foreground"
+                    className="absolute right-2 top-2 rounded-md bg-background/80 p-1 text-muted-foreground hover:bg-background hover:text-foreground"
                   >
                     <X className="h-4 w-4" />
                   </button>
