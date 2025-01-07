@@ -4,6 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Editor } from "@toast-ui/react-editor";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import TagInput from "@/components/features/TagInput";
+import { ImageIcon, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -26,11 +33,32 @@ const CATEGORIES = [
 
 export default function WritePage() {
   const editorRef = useRef<Editor>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [showThumbnailDialog, setShowThumbnailDialog] = useState(false);
+
+  const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setThumbnail(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeThumbnail = () => {
+    setThumbnail(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleSaveDraft = () => {
     // const editorInstance = editorRef.current?.getInstance();
@@ -68,30 +96,76 @@ export default function WritePage() {
       {/* 글 설정 영역 */}
       <div className="container pb-2 pt-1">
         <div className="flex flex-col gap-2 sm:flex-row">
-          <Input
-            placeholder="제목"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="sm:flex-[2]"
-          />
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="sm:w-[120px]">
-              <SelectValue placeholder="카테고리" />
-            </SelectTrigger>
-            <SelectContent>
-              {CATEGORIES.map((cat) => (
-                <SelectItem key={cat} value={cat.toLowerCase()}>
-                  {cat}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <TagInput
-            value={tags}
-            onChange={setTags}
-            placeholder="태그 입력"
-            className="px-3 sm:flex-[3]"
-          />
+          <div className="flex flex-[4] flex-col gap-2">
+            <Input
+              placeholder="제목"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <div className="flex gap-2">
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="카테고리" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat.toLowerCase()}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <TagInput
+                value={tags}
+                onChange={setTags}
+                placeholder="태그 입력"
+                className="flex-1 px-3"
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="h-20">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                multiple={false}
+                onChange={handleThumbnailSelect}
+                className="hidden"
+              />
+              {thumbnail ? (
+                <div
+                  className="group relative h-full cursor-pointer overflow-hidden rounded-md border border-input hover:bg-accent"
+                  onClick={() => setShowThumbnailDialog(true)}
+                >
+                  <img
+                    src={thumbnail}
+                    alt="썸네일 미리보기"
+                    className="h-full w-full rounded-md object-cover"
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeThumbnail();
+                    }}
+                    className="absolute right-2 top-2 rounded-md bg-background/80 p-1 text-muted-foreground hover:bg-background hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-full w-full gap-2"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <ImageIcon className="h-4 w-4" />
+                  <span>썸네일</span>
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -114,6 +188,39 @@ export default function WritePage() {
           ]}
         />
       </div>
+
+      {/* 썸네일 미리보기 모달 */}
+      <Dialog open={showThumbnailDialog} onOpenChange={setShowThumbnailDialog}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>썸네일 미리보기</DialogTitle>
+          </DialogHeader>
+          <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+            <img
+              src={thumbnail ?? ""}
+              alt="썸네일 미리보기"
+              className="h-full w-full object-contain"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              이미지 변경
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                removeThumbnail();
+                setShowThumbnailDialog(false);
+              }}
+            >
+              삭제
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
