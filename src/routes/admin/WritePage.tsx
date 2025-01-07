@@ -18,9 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { createPost } from "@/lib/firebase/post";
+// import { useNavigate } from "react-router-dom";
 
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
+import { useAuth } from "@/hooks/useAuth";
 
 // 임시 카테고리 데이터
 const CATEGORIES = [
@@ -35,12 +39,18 @@ export default function WritePage() {
   const editorRef = useRef<Editor>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { user } = useAuth();
+  //   const navigate = useNavigate();
+
+  const uid = user?.uid;
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [showThumbnailDialog, setShowThumbnailDialog] = useState(false);
+  const { toast } = useToast();
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -66,10 +76,90 @@ export default function WritePage() {
     // console.log("임시저장:", { title, category, tags, content });
   };
 
-  const handlePublish = () => {
-    // const editorInstance = editorRef.current?.getInstance();
-    // const content = editorInstance?.getMarkdown();
-    // console.log("발행하기:", { title, category, tags, content });
+  const handlePublish = async () => {
+    if (!uid) {
+      toast({
+        variant: "destructive",
+        title: "인증 오류",
+        description: "로그인이 필요합니다.",
+      });
+      return;
+    }
+
+    if (!title.trim()) {
+      toast({
+        variant: "destructive",
+        title: "제목을 입력해주세요.",
+        duration: 2000,
+      });
+      return;
+    }
+
+    if (!category) {
+      toast({
+        variant: "destructive",
+        title: "카테고리를 선택해주세요.",
+        duration: 2000,
+      });
+      return;
+    }
+
+    const editorInstance = editorRef.current?.getInstance();
+    const content = editorInstance?.getHTML();
+
+    if (!content?.trim()) {
+      toast({
+        variant: "destructive",
+        title: "내용을 입력해주세요.",
+        duration: 2000,
+      });
+      return;
+    }
+
+    try {
+      setIsPublishing(true);
+
+      // 썸네일 파일 가져오기 (base64 -> File 객체로 변환)
+      let thumbnailFile: File | undefined;
+      if (thumbnail) {
+        const response = await fetch(thumbnail);
+        const blob = await response.blob();
+        thumbnailFile = new File([blob], "thumbnail.jpg", {
+          type: "image/jpeg",
+        });
+      }
+
+      // createPost 가 리턴하는 것은 postId 이다.
+      await createPost({
+        title: title.trim(),
+        content,
+        categoryId: category,
+        tags,
+        thumbnailFile,
+        authorId: uid,
+      });
+
+      toast({
+        title: "포스트가 발행되었습니다.",
+        description: "작성하신 글이 성공적으로 발행되었습니다.",
+        duration: 3000,
+      });
+
+      // TODO: 포스트 상세 페이지 구현 후 활성화
+      // navigate(`/posts/${postId}`);
+      // 또는
+      // navigate(`/blog/${postId}`);
+    } catch (error) {
+      console.error("Error publishing post:", error);
+      toast({
+        variant: "destructive",
+        title: "발행 실패",
+        description: "포스트 발행 중 오류가 발생했습니다. 다시 시도해주세요.",
+        duration: 3000,
+      });
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   return (
@@ -86,8 +176,12 @@ export default function WritePage() {
             >
               임시저장
             </Button>
-            <Button onClick={handlePublish} className="sm:flex-none">
-              발행하기
+            <Button
+              onClick={handlePublish}
+              className="sm:flex-none"
+              disabled={isPublishing}
+            >
+              {isPublishing ? "발행 중..." : "발행하기"}
             </Button>
           </div>
         </div>
