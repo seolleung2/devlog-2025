@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
 import Header from "./Header";
+import WriteButton from "../features/WriteButton";
 
 export default function RootLayout() {
   return (
@@ -13,6 +14,7 @@ export default function RootLayout() {
         </div>
       </main>
       <Footer />
+      <WriteButton />
     </div>
   );
 }
