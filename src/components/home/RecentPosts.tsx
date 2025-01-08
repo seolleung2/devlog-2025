@@ -67,10 +67,14 @@ export function RecentPosts({ posts, categories }: RecentPostsProps) {
                     {featuredPost.likeCount}
                   </span>
                   <time
-                    dateTime={featuredPost.createdAt.toISOString()}
+                    dateTime={new Date(
+                      featuredPost.createdAt.seconds * 1000,
+                    ).toISOString()}
                     className="ml-auto"
                   >
-                    {featuredPost.createdAt.toLocaleDateString()}
+                    {new Date(
+                      featuredPost.createdAt.seconds * 1000,
+                    ).toLocaleDateString()}
                   </time>
                 </div>
               </div>
@@ -129,10 +133,14 @@ export function RecentPosts({ posts, categories }: RecentPostsProps) {
                     {post.likeCount}
                   </span>
                   <time
-                    dateTime={post.createdAt.toISOString()}
+                    dateTime={new Date(
+                      post.createdAt.seconds * 1000,
+                    ).toISOString()}
                     className="ml-auto"
                   >
-                    {post.createdAt.toLocaleDateString()}
+                    {new Date(
+                      post.createdAt.seconds * 1000,
+                    ).toLocaleDateString()}
                   </time>
                 </div>
               </div>
@@ -191,10 +199,14 @@ export function RecentPosts({ posts, categories }: RecentPostsProps) {
                     {post.likeCount}
                   </span>
                   <time
-                    dateTime={post.createdAt.toISOString()}
+                    dateTime={new Date(
+                      post.createdAt.seconds * 1000,
+                    ).toISOString()}
                     className="ml-auto"
                   >
-                    {post.createdAt.toLocaleDateString()}
+                    {new Date(
+                      post.createdAt.seconds * 1000,
+                    ).toLocaleDateString()}
                   </time>
                 </div>
               </CardContent>

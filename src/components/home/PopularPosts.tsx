@@ -66,10 +66,12 @@ export function PopularPosts({ posts, categories }: PopularPostsProps) {
                   {post.likeCount}
                 </span>
                 <time
-                  dateTime={post.createdAt.toISOString()}
+                  dateTime={new Date(
+                    post.createdAt.seconds * 1000,
+                  ).toISOString()}
                   className="ml-auto"
                 >
-                  {post.createdAt.toLocaleDateString()}
+                  {new Date(post.createdAt.seconds * 1000).toLocaleDateString()}
                 </time>
               </div>
             </div>
@@ -134,10 +136,14 @@ export function PopularPosts({ posts, categories }: PopularPostsProps) {
                           {post.likeCount}
                         </span>
                         <time
-                          dateTime={post.createdAt.toISOString()}
+                          dateTime={new Date(
+                            post.createdAt.seconds * 1000,
+                          ).toISOString()}
                           className="ml-auto"
                         >
-                          {post.createdAt.toLocaleDateString()}
+                          {new Date(
+                            post.createdAt.seconds * 1000,
+                          ).toLocaleDateString()}
                         </time>
                       </div>
                     </CardContent>
