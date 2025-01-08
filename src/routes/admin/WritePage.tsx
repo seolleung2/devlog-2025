@@ -1,10 +1,16 @@
 import { useRef, useState } from "react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ImageIcon, X } from "lucide-react";
+import { Editor } from "@toast-ui/react-editor";
+import { useNavigate } from "react-router-dom";
+
+import { storage } from "@/lib/firebase/firebase";
+import { useAuth } from "@/hooks/useAuth";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Editor } from "@toast-ui/react-editor";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import TagInput from "@/components/features/TagInput";
-import { ImageIcon, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,13 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { createPost } from "@/lib/firebase/post";
-// import { useNavigate } from "react-router-dom";
 
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
-import { useAuth } from "@/hooks/useAuth";
 
 // 임시 카테고리 데이터
 const CATEGORIES = [
@@ -40,7 +43,7 @@ export default function WritePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { user } = useAuth();
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const uid = user?.uid;
 
@@ -129,8 +132,7 @@ export default function WritePage() {
         });
       }
 
-      // createPost 가 리턴하는 것은 postId 이다.
-      await createPost({
+      const postId = await createPost({
         title: title.trim(),
         content,
         categoryId: category,
@@ -145,10 +147,7 @@ export default function WritePage() {
         duration: 3000,
       });
 
-      // TODO: 포스트 상세 페이지 구현 후 활성화
-      // navigate(`/posts/${postId}`);
-      // 또는
-      // navigate(`/blog/${postId}`);
+      navigate(`/posts/${postId}`);
     } catch (error) {
       console.error("Error publishing post:", error);
       toast({
@@ -159,6 +158,54 @@ export default function WritePage() {
       });
     } finally {
       setIsPublishing(false);
+    }
+  };
+
+  const handleImageUpload = async (
+    blob: Blob | File,
+    // eslint-disable-next-line no-unused-vars
+    callback: (url: string, altText: string) => void,
+  ) => {
+    try {
+      const validImageTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+
+      const fileType = (blob as File).type;
+      if (!validImageTypes.includes(fileType)) {
+        toast({
+          variant: "destructive",
+          title: "지원하지 않는 이미지 형식입니다.",
+          description: "JPG, JPEG, PNG, GIF, WEBP 형식만 지원합니다.",
+          duration: 3000,
+        });
+        return;
+      }
+
+      const file = blob as File;
+      const fileExtension =
+        file.name.split(".").pop() || fileType.split("/")[1];
+      const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
+      const altText = file.name.split(".")[0];
+
+      const storageRef = ref(storage, `posts/${fileName}`);
+      await uploadBytes(storageRef, blob);
+
+      const downloadURL = await getDownloadURL(storageRef);
+
+      callback(downloadURL, altText);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({
+        variant: "destructive",
+        title: "이미지 업로드 실패",
+        description: "잠시 후 다시 시도해주세요.",
+        duration: 3000,
+      });
     }
   };
 
@@ -269,9 +316,12 @@ export default function WritePage() {
           ref={editorRef}
           initialValue=""
           previewStyle={isDesktop ? "vertical" : "tab"}
-          height={isDesktop ? "calc(100vh - 280px)" : "calc(100vh - 280px)"}
+          height="calc(100vh - 280px)"
           initialEditType="markdown"
           useCommandShortcut={true}
+          hooks={{
+            addImageBlobHook: handleImageUpload,
+          }}
           toolbarItems={[
             ["heading", "bold", "italic"],
             ["hr"],

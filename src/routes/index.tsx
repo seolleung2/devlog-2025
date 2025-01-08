@@ -6,7 +6,7 @@ import LoginPage from "./auth/LoginPage";
 import RegisterPage from "./auth/RegisterPage";
 
 import BlogListPage from "./blog/BlogListPage";
-import BlogPostPage from "./blog/BlogPostPage";
+import PostDetailPage from "./posts/PostDetailPage";
 
 import DashboardPage from "./admin/DashboardPage";
 import PostManagePage from "./admin/PostManagePage";
@@ -27,10 +27,10 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "blog",
+        path: "posts",
         children: [
-          { index: true, element: <BlogListPage /> },
-          { path: ":postId", element: <BlogPostPage /> },
+          { index: true, element: <BlogListPage /> }, // 추후 작업시 변경
+          { path: ":id", element: <PostDetailPage /> },
         ],
       },
       {
