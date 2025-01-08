@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ImageIcon, X } from "lucide-react";
 import { Editor } from "@toast-ui/react-editor";
+import { useNavigate } from "react-router-dom";
 
 import { storage } from "@/lib/firebase/firebase";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,7 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createPost } from "@/lib/firebase/post";
-// import { useNavigate } from "react-router-dom";
 
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
@@ -43,7 +43,7 @@ export default function WritePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { user } = useAuth();
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const uid = user?.uid;
 
@@ -132,8 +132,7 @@ export default function WritePage() {
         });
       }
 
-      // createPost 가 리턴하는 것은 postId 이다.
-      await createPost({
+      const postId = await createPost({
         title: title.trim(),
         content,
         categoryId: category,
@@ -148,10 +147,7 @@ export default function WritePage() {
         duration: 3000,
       });
 
-      // TODO: 포스트 상세 페이지 구현 후 활성화
-      // navigate(`/posts/${postId}`);
-      // 또는
-      // navigate(`/blog/${postId}`);
+      navigate(`/posts/${postId}`);
     } catch (error) {
       console.error("Error publishing post:", error);
       toast({
