@@ -209,6 +209,18 @@ export default function WritePage() {
     }
   };
 
+  const toolbarItems = isDesktop
+    ? [
+        ["heading", "bold", "italic"],
+        ["hr"],
+        ["image", "link"],
+        ["ul", "ol"],
+        ["code", "codeblock"],
+        ["table", "strike"],
+        ["quote"],
+      ]
+    : [["heading", "bold"], ["image", "link"], ["ul", "ol"], ["code"]];
+
   return (
     <main className="flex flex-1 flex-col">
       {/* 헤더 영역 */}
@@ -322,14 +334,7 @@ export default function WritePage() {
           hooks={{
             addImageBlobHook: handleImageUpload,
           }}
-          toolbarItems={[
-            ["heading", "bold", "italic"],
-            ["hr"],
-            ["image", "link"],
-            ["ul", "ol"],
-            ["code", "codeblock"],
-            ...(isDesktop ? [["table", "strike"], ["quote"]] : []),
-          ]}
+          toolbarItems={toolbarItems}
         />
       </div>
 
