@@ -16,7 +16,7 @@ export default function WriteButton() {
     <Button
       variant="default"
       size="icon"
-      className="fixed bottom-16 right-48 z-50 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-105"
+      className="fixed bottom-24 right-6 z-50 h-14 w-14 rounded-full shadow-lg transition-transform hover:scale-105 md:bottom-8 md:right-52"
       onClick={() => navigate("/admin/write")}
     >
       <Pencil className="h-6 w-6" />
