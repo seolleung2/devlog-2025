@@ -31,6 +31,7 @@ export default function PostDetailPage() {
     }>
   >([]);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -72,6 +73,28 @@ export default function PostDetailPage() {
     setTableOfContents(toc);
   }, [post]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: "-80px 0px -80% 0px",
+      },
+    );
+
+    const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    headings.forEach((heading) => observer.observe(heading));
+
+    return () => {
+      headings.forEach((heading) => observer.unobserve(heading));
+    };
+  }, [tableOfContents]);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -88,6 +111,29 @@ export default function PostDetailPage() {
     }
     setIsTocOpen(false);
   };
+
+  const TocItem = ({ heading }: { heading: (typeof tableOfContents)[0] }) => (
+    <button
+      key={heading.id}
+      onClick={() => scrollToSection(heading.id)}
+      className={`group flex w-full items-center rounded-md py-2 text-left transition-all ${heading.level === 1 ? "font-bold" : "font-medium"} ${
+        activeId === heading.id
+          ? "bg-blue-50/80 font-semibold text-blue-600"
+          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+      } `}
+      style={{ paddingLeft: `${(heading.level - 1) * 1}rem` }}
+    >
+      <span
+        className={`ml-3 text-sm transition-colors ${
+          activeId === heading.id
+            ? "font-semibold text-blue-600"
+            : "group-hover:font-medium"
+        } `}
+      >
+        {heading.text}
+      </span>
+    </button>
+  );
 
   if (isLoading)
     return (
@@ -186,20 +232,9 @@ export default function PostDetailPage() {
                     <SheetHeader>
                       <SheetTitle>목차</SheetTitle>
                     </SheetHeader>
-                    <nav className="mt-6 space-y-3">
+                    <nav className="mt-6 flex max-h-[calc(100vh-6rem)] flex-col gap-1 overflow-y-auto">
                       {tableOfContents.map((heading) => (
-                        <button
-                          key={heading.id}
-                          onClick={() => scrollToSection(heading.id)}
-                          className={`block w-full text-left text-gray-600 hover:text-indigo-600 ${
-                            heading.level === 1 ? "font-semibold" : ""
-                          }`}
-                          style={{
-                            paddingLeft: `${(heading.level - 1) * 1}rem`,
-                          }}
-                        >
-                          {heading.text}
-                        </button>
+                        <TocItem key={heading.id} heading={heading} />
                       ))}
                     </nav>
                   </SheetContent>
@@ -249,18 +284,9 @@ export default function PostDetailPage() {
                 <h2 className="mb-4 text-lg font-semibold text-gray-900">
                   목차
                 </h2>
-                <nav className="space-y-2">
+                <nav className="flex flex-col gap-1">
                   {tableOfContents.map((heading) => (
-                    <button
-                      key={heading.id}
-                      onClick={() => scrollToSection(heading.id)}
-                      className={`block w-full text-left text-gray-600 hover:text-indigo-600 ${
-                        heading.level === 1 ? "font-semibold" : ""
-                      }`}
-                      style={{ paddingLeft: `${(heading.level - 1) * 1}rem` }}
-                    >
-                      {heading.text}
-                    </button>
+                    <TocItem key={heading.id} heading={heading} />
                   ))}
                 </nav>
               </div>
