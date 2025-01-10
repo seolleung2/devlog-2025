@@ -31,7 +31,7 @@ export default function HomePage() {
               categories={MOCK_CATEGORIES}
             />
             <Separator className="my-8" />
-            <RecentPosts posts={MOCK_POSTS} categories={MOCK_CATEGORIES} />
+            <RecentPosts />
           </div>
 
           {/* 오른쪽: 카테고리 메뉴 */}
