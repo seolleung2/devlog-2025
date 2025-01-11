@@ -1,93 +1,83 @@
-import * as React from 'react';
+/* eslint-disable no-unused-vars */
+import * as React from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import type { OurFileRouter } from '@/app/api/uploadthing/route';
-import type {
-  ClientUploadedFileData,
-  UploadFilesOptions,
-} from 'uploadthing/types';
+// 기본 파일 타입 정의
+export interface UploadedFile {
+  key: string;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+}
 
-import { generateReactHelpers } from '@uploadthing/react';
-import { toast } from 'sonner';
-import { z } from 'zod';
-
-export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
-
-interface UseUploadFileProps
-  extends Pick<
-    UploadFilesOptions<OurFileRouter, keyof OurFileRouter>,
-    'headers' | 'onUploadBegin' | 'onUploadProgress' | 'skipPolling'
-  > {
+interface UseUploadFileProps {
   onUploadComplete?: (file: UploadedFile) => void;
   onUploadError?: (error: unknown) => void;
+}
+
+interface UploadFilesOptions {
+  files: File[];
+}
+
+async function uploadFiles(
+  _endpoint: string,
+  options: UploadFilesOptions,
+): Promise<UploadedFile[]> {
+  const file = options.files[0];
+  return [
+    {
+      key: `mock-key-${Date.now()}`,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      url: URL.createObjectURL(file),
+    },
+  ];
 }
 
 export function useUploadFile({
   onUploadComplete,
   onUploadError,
-  ...props
 }: UseUploadFileProps = {}) {
-  const [uploadedFile, setUploadedFile] = React.useState<UploadedFile>();
-  const [uploadingFile, setUploadingFile] = React.useState<File>();
+  const [uploadedFile, setUploadedFile] = React.useState<
+    UploadedFile | undefined
+  >();
+  const [uploadingFile, setUploadingFile] = React.useState<File | undefined>();
   const [progress, setProgress] = React.useState<number>(0);
   const [isUploading, setIsUploading] = React.useState(false);
 
-  async function uploadThing(file: File) {
+  async function uploadThing(file: File): Promise<UploadedFile | undefined> {
     setIsUploading(true);
     setUploadingFile(file);
 
     try {
-      const res = await uploadFiles('editorUploader', {
-        ...props,
+      // 모의 업로드 진행
+      let uploadProgress = 0;
+      const progressInterval = setInterval(() => {
+        uploadProgress += 10;
+        setProgress(Math.min(uploadProgress, 100));
+        if (uploadProgress >= 100) clearInterval(progressInterval);
+      }, 200);
+
+      const res = await uploadFiles("imageUpload", {
         files: [file],
-        onUploadProgress: ({ progress }) => {
-          setProgress(Math.min(progress, 100));
-        },
       });
 
-      setUploadedFile(res[0]);
+      clearInterval(progressInterval);
+      setProgress(100);
 
-      onUploadComplete?.(res[0]);
+      const uploadedFile = res[0];
+      setUploadedFile(uploadedFile);
+      onUploadComplete?.(uploadedFile);
 
       return uploadedFile;
     } catch (error) {
-      const errorMessage = getErrorMessage(error);
-
-      const message =
-        errorMessage.length > 0
-          ? errorMessage
-          : 'Something went wrong, please try again later.';
-
+      const message = getErrorMessage(error);
       toast.error(message);
-
       onUploadError?.(error);
-
-      // Mock upload for unauthenticated users
-      // toast.info('User not logged in. Mocking upload process.');
-      const mockUploadedFile = {
-        key: 'mock-key-0',
-        appUrl: `https://mock-app-url.com/${file.name}`,
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: URL.createObjectURL(file),
-      } as UploadedFile;
-
-      // Simulate upload progress
-      let progress = 0;
-
-      const simulateProgress = async () => {
-        while (progress < 100) {
-          await new Promise((resolve) => setTimeout(resolve, 50));
-          progress += 2;
-          setProgress(Math.min(progress, 100));
-        }
-      };
-
-      await simulateProgress();
-
-      setUploadedFile(mockUploadedFile);
-
-      return mockUploadedFile;
+      return undefined;
     } finally {
       setProgress(0);
       setIsUploading(false);
@@ -104,27 +94,19 @@ export function useUploadFile({
   };
 }
 
-export const { uploadFiles, useUploadThing } =
-  generateReactHelpers<OurFileRouter>();
-
-export function getErrorMessage(err: unknown) {
-  const unknownError = 'Something went wrong, please try again later.';
+export function getErrorMessage(err: unknown): string {
+  const unknownError = "업로드 중 오류가 발생했습니다. 다시 시도해주세요.";
 
   if (err instanceof z.ZodError) {
-    const errors = err.issues.map((issue) => {
-      return issue.message;
-    });
-
-    return errors.join('\n');
+    const errors = err.issues.map((issue) => issue.message);
+    return errors.join("\n");
   } else if (err instanceof Error) {
     return err.message;
-  } else {
-    return unknownError;
   }
+  return unknownError;
 }
 
-export function showErrorToast(err: unknown) {
+export function showErrorToast(err: unknown): void {
   const errorMessage = getErrorMessage(err);
-
-  return toast.error(errorMessage);
+  toast.error(errorMessage);
 }
