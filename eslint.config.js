@@ -7,10 +7,10 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     ignores: [
-      "dist",
-      "src/components/ui/*",
-      "src/components/plate-ui/*",
-      "src/components/editor/*",
+      "**/dist/**",
+      "**/src/components/ui/**",
+      "**/src/components/plate-ui/**",
+      "**/src/components/editor/**",
     ],
   },
   {
