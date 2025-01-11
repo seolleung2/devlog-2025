@@ -1,19 +1,17 @@
-'use client';
+"use client";
 
-import React from 'react';
-
-import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
+import type { DropdownMenuProps } from "@radix-ui/react-dropdown-menu";
 
 import {
   useAlignDropdownMenu,
   useAlignDropdownMenuState,
-} from '@udecode/plate-alignment/react';
+} from "@udecode/plate-alignment/react";
 import {
   AlignCenterIcon,
   AlignJustifyIcon,
   AlignLeftIcon,
   AlignRightIcon,
-} from 'lucide-react';
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -22,25 +20,25 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   useOpenState,
-} from './dropdown-menu';
-import { ToolbarButton } from './toolbar';
+} from "./dropdown-menu";
+import { ToolbarButton } from "./toolbar";
 
 const items = [
   {
     icon: AlignLeftIcon,
-    value: 'left',
+    value: "left",
   },
   {
     icon: AlignCenterIcon,
-    value: 'center',
+    value: "center",
   },
   {
     icon: AlignRightIcon,
-    value: 'right',
+    value: "right",
   },
   {
     icon: AlignJustifyIcon,
-    value: 'justify',
+    value: "justify",
   },
 ];
 

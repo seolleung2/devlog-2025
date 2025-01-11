@@ -1,15 +1,13 @@
-'use client';
+"use client";
 
-import React from 'react';
-
-import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
+import type { DropdownMenuProps } from "@radix-ui/react-dropdown-menu";
 
 import {
   useEditorReadOnly,
   useEditorRef,
   usePlateStore,
-} from '@udecode/plate/react';
-import { Eye, Pen } from 'lucide-react';
+} from "@udecode/plate/react";
+import { Eye, Pen } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,8 +16,8 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   useOpenState,
-} from './dropdown-menu';
-import { ToolbarButton } from './toolbar';
+} from "./dropdown-menu";
+import { ToolbarButton } from "./toolbar";
 
 export function ModeDropdownMenu(props: DropdownMenuProps) {
   const editor = useEditorRef();
@@ -27,9 +25,9 @@ export function ModeDropdownMenu(props: DropdownMenuProps) {
   const readOnly = useEditorReadOnly();
   const openState = useOpenState();
 
-  let value = 'editing';
+  let value = "editing";
 
-  if (readOnly) value = 'viewing';
+  if (readOnly) value = "viewing";
 
   const item: any = {
     editing: (
@@ -62,15 +60,15 @@ export function ModeDropdownMenu(props: DropdownMenuProps) {
         <DropdownMenuRadioGroup
           value={value}
           onValueChange={(newValue) => {
-            if (newValue !== 'viewing') {
+            if (newValue !== "viewing") {
               setReadOnly(false);
             }
-            if (newValue === 'viewing') {
+            if (newValue === "viewing") {
               setReadOnly(true);
 
               return;
             }
-            if (newValue === 'editing') {
+            if (newValue === "editing") {
               editor.tf.focus();
 
               return;

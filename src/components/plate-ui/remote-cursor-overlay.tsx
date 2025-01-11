@@ -1,13 +1,13 @@
-'use client';
+"use client";
 // Lifted from slate-yjs https://github.com/BitPhinix/slate-yjs/blob/main/examples/frontend/src/pages/RemoteCursorOverlay/Overlay.tsx
 
-import React, { type CSSProperties, useState } from 'react';
+import React, { type CSSProperties, useState } from "react";
 
 import {
   type CursorOverlayData,
   useRemoteCursorOverlayPositions,
-} from '@slate-yjs/react';
-import { useEditorContainerRef } from '@udecode/plate/react';
+} from "@slate-yjs/react";
+import { useEditorContainerRef } from "@udecode/plate/react";
 
 export function addAlpha(hexColor: string, opacity: number): string {
   const normalized = Math.round(Math.min(Math.max(opacity, 0), 1) * 255);
@@ -20,7 +20,7 @@ export type CursorData = {
   name: string;
 };
 
-type CaretProps = Pick<CursorOverlayData<CursorData>, 'caretPosition' | 'data'>;
+type CaretProps = Pick<CursorOverlayData<CursorData>, "caretPosition" | "data">;
 const cursorOpacity = 0.7;
 const hoverOpacity = 1;
 
@@ -37,15 +37,15 @@ function Caret({ caretPosition, data }: CaretProps) {
     ...caretPosition,
     background: data?.color,
     opacity: cursorOpacity,
-    transition: 'opacity 0.2s',
+    transition: "opacity 0.2s",
   };
   const caretStyleHover = { ...caretStyle, opacity: hoverOpacity };
 
   const labelStyle: CSSProperties = {
     background: data?.color,
     opacity: cursorOpacity,
-    transform: 'translateY(-100%)',
-    transition: 'opacity 0.2s',
+    transform: "translateY(-100%)",
+    transition: "opacity 0.2s",
   };
   const labelStyleHover = { ...labelStyle, opacity: hoverOpacity };
 
@@ -82,7 +82,7 @@ function RemoteSelection({
 
   return (
     <React.Fragment>
-      {selectionRects.map((position, i) => (
+      {selectionRects.map((position: any, i: any) => (
         <div
           key={i}
           className="pointer-events-none absolute"

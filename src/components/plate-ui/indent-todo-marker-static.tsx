@@ -1,14 +1,12 @@
-import React from 'react';
+import type { SlateRenderElementProps } from "@udecode/plate";
 
-import type { SlateRenderElementProps } from '@udecode/plate';
+import { cn } from "@udecode/cn";
 
-import { cn } from '@udecode/cn';
-
-import { CheckboxStatic } from './checkbox-static';
+import { CheckboxStatic } from "./checkbox-static";
 
 export const TodoMarkerStatic = ({
   element,
-}: Omit<SlateRenderElementProps, 'children'>) => {
+}: Omit<SlateRenderElementProps, "children">) => {
   return (
     <div contentEditable={false}>
       <CheckboxStatic
@@ -26,7 +24,7 @@ export const TodoLiStatic = ({
   return (
     <span
       className={cn(
-        (element.checked as boolean) && 'text-muted-foreground line-through'
+        (element.checked as boolean) && "text-muted-foreground line-through",
       )}
     >
       {children}
