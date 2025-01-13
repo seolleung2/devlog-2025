@@ -71,12 +71,22 @@ export default function Posts() {
           <TableHeader>
             <TableRow>
               <TableHead>제목</TableHead>
-              <TableHead>요약</TableHead>
-              <TableHead className="w-[100px]">카테고리</TableHead>
-              <TableHead className="w-[150px]">작성자</TableHead>
-              <TableHead className="w-[150px]">작성일</TableHead>
-              <TableHead className="w-[150px]">업데이트일</TableHead>
-              <TableHead className="w-[100px] text-right">조회</TableHead>
+              <TableHead className="hidden md:table-cell">요약</TableHead>
+              <TableHead className="hidden w-[100px] sm:table-cell">
+                카테고리
+              </TableHead>
+              <TableHead className="hidden w-[150px] lg:table-cell">
+                작성자
+              </TableHead>
+              <TableHead className="hidden w-[150px] lg:table-cell">
+                작성일
+              </TableHead>
+              <TableHead className="hidden w-[150px] xl:table-cell">
+                업데이트일
+              </TableHead>
+              <TableHead className="hidden w-[100px] text-right sm:table-cell">
+                조회
+              </TableHead>
               <TableHead className="w-[100px] text-right">좋아요</TableHead>
             </TableRow>
           </TableHeader>
@@ -90,8 +100,14 @@ export default function Posts() {
                 <TableCell>
                   <div>
                     <span className="font-medium">{post.title}</span>
+                    <div className="mt-1 text-sm text-muted-foreground md:hidden">
+                      {post.excerpt}
+                    </div>
+                    <div className="mt-1 text-sm text-muted-foreground lg:hidden">
+                      {post.author} · {post.createdAt}
+                    </div>
                     {post.tags.length > 0 && (
-                      <div className="mt-1 flex gap-1">
+                      <div className="mt-1 flex flex-wrap gap-1">
                         {post.tags.map((tag) => (
                           <span
                             key={tag}
@@ -104,18 +120,26 @@ export default function Posts() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
+                <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
                   {post.excerpt}
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">
                   <span className="rounded-lg bg-primary/10 px-2 py-1 text-sm text-primary">
                     {post.category}
                   </span>
                 </TableCell>
-                <TableCell>{post.author}</TableCell>
-                <TableCell>{post.createdAt}</TableCell>
-                <TableCell>{post.updatedAt}</TableCell>
-                <TableCell className="text-right">{post.viewCount}</TableCell>
+                <TableCell className="hidden lg:table-cell">
+                  {post.author}
+                </TableCell>
+                <TableCell className="hidden lg:table-cell">
+                  {post.createdAt}
+                </TableCell>
+                <TableCell className="hidden xl:table-cell">
+                  {post.updatedAt}
+                </TableCell>
+                <TableCell className="hidden text-right sm:table-cell">
+                  {post.viewCount}
+                </TableCell>
                 <TableCell className="text-right">{post.likeCount}</TableCell>
               </TableRow>
             ))}
