@@ -66,31 +66,34 @@ export default function Posts() {
   };
 
   return (
-    <div className="container py-8">
+    <div className="container">
       <h1 className="mb-8 text-3xl font-bold">게시글 목록</h1>
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>제목</TableHead>
-              <TableHead className="hidden md:table-cell">요약</TableHead>
-              <TableHead className="hidden w-[100px] sm:table-cell">
+            <TableRow className="bg-muted/50 hover:bg-muted/50">
+              <TableHead className="py-2 font-semibold">제목</TableHead>
+              <TableHead className="hidden py-2 font-semibold md:table-cell">
+                요약
+              </TableHead>
+              <TableHead className="hidden w-[100px] py-2 font-semibold sm:table-cell">
                 카테고리
               </TableHead>
-              <TableHead className="hidden w-[150px] lg:table-cell">
+              <TableHead className="hidden w-[150px] py-2 font-semibold lg:table-cell">
                 작성자
               </TableHead>
-              <TableHead className="hidden w-[150px] lg:table-cell">
+              <TableHead className="hidden w-[150px] py-2 font-semibold lg:table-cell">
                 작성일
               </TableHead>
-              <TableHead className="hidden w-[150px] xl:table-cell">
+              <TableHead className="hidden w-[150px] py-2 font-semibold xl:table-cell">
                 업데이트일
               </TableHead>
-              <TableHead className="hidden w-[100px] text-right sm:table-cell">
+              <TableHead className="hidden w-[100px] py-2 text-right font-semibold sm:table-cell">
                 조회
               </TableHead>
-              <TableHead className="w-[100px] text-right">좋아요</TableHead>
+              <TableHead className="w-[100px] py-2 text-right font-semibold">
+                좋아요
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -100,21 +103,23 @@ export default function Posts() {
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleRowClick(post.id)}
               >
-                <TableCell>
-                  <div>
-                    <span className="font-medium">{post.title}</span>
-                    <div className="mt-1 text-sm text-muted-foreground md:hidden">
-                      {post.excerpt}
+                <TableCell className="py-2">
+                  <div className="space-y-2">
+                    <span className="line-clamp-1 font-medium">
+                      {post.title}
+                    </span>
+                    <div className="text-sm text-muted-foreground md:hidden">
+                      <p className="line-clamp-1">{post.excerpt}</p>
                     </div>
-                    <div className="mt-1 text-sm text-muted-foreground lg:hidden">
+                    <div className="text-sm text-muted-foreground lg:hidden">
                       {post.authorId} · {formatDate(post.createdAt)}
                     </div>
                     {post.tags.length > 0 && (
-                      <div className="mt-1 flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1">
                         {post.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                            className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground hover:bg-muted/80"
                           >
                             {tag}
                           </span>
@@ -123,27 +128,29 @@ export default function Posts() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
-                  {post.excerpt}
+                <TableCell className="hidden py-2 text-sm text-muted-foreground md:table-cell">
+                  <p className="line-clamp-1">{post.excerpt}</p>
                 </TableCell>
-                <TableCell className="hidden sm:table-cell">
-                  <span className="rounded-lg bg-primary/10 px-2 py-1 text-sm text-primary">
+                <TableCell className="hidden py-2 sm:table-cell">
+                  <span className="rounded-lg bg-blue-50 px-2 py-1 text-sm text-blue-600 transition-colors hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20">
                     {post.categoryId}
                   </span>
                 </TableCell>
-                <TableCell className="hidden lg:table-cell">
+                <TableCell className="hidden py-2 text-muted-foreground lg:table-cell">
                   {post.authorId}
                 </TableCell>
-                <TableCell className="hidden lg:table-cell">
+                <TableCell className="hidden py-2 text-muted-foreground lg:table-cell">
                   {formatDate(post.createdAt)}
                 </TableCell>
-                <TableCell className="hidden xl:table-cell">
+                <TableCell className="hidden py-2 text-muted-foreground xl:table-cell">
                   {formatDate(post.updatedAt)}
                 </TableCell>
-                <TableCell className="hidden text-right sm:table-cell">
+                <TableCell className="hidden py-2 text-right text-muted-foreground sm:table-cell">
                   {post.viewCount}
                 </TableCell>
-                <TableCell className="text-right">{post.likeCount}</TableCell>
+                <TableCell className="py-2 text-right font-medium">
+                  {post.likeCount}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
