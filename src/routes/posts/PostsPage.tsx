@@ -16,36 +16,31 @@ import {
 } from "@/components/ui/pagination";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface Post {
-  id: number;
-  title: string;
-  author: string;
-  createdAt: string;
-  updatedAt: string;
-  viewCount: number;
-  likeCount: number;
-  categoryId: number;
-  category: string;
-  tags: string[];
-  excerpt: string;
-}
+import { Post } from "@/types";
 
 const DUMMY_POSTS: Post[] = Array.from({ length: 23 }, (_, i) => ({
-  id: i + 1,
+  id: `post${i + 1}`,
   title: `게시글 제목 ${i + 1}`,
-  author: `작성자 ${i + 1}`,
-  createdAt: new Date(2024, 0, i + 1).toLocaleDateString(),
-  updatedAt: new Date(2024, 0, i + 2).toLocaleDateString(),
-  viewCount: Math.floor(Math.random() * 100),
-  likeCount: Math.floor(Math.random() * 50),
-  categoryId: Math.floor(Math.random() * 3) + 1,
-  category: ["개발", "AI", "일상"][Math.floor(Math.random() * 3)],
+  content: `게시글 ${i + 1}의 전체 내용입니다.`,
+  excerpt: `이것은 게시글 ${i + 1}의 요약입니다.`,
+  categoryId: `category${Math.floor(Math.random() * 3) + 1}`,
   tags: ["React", "TypeScript", "JavaScript"].slice(
     0,
     Math.floor(Math.random() * 3) + 1,
   ),
-  excerpt: `이것은 게시글 ${i + 1}의 요약입니다.`,
+  thumbnailUrl: `https://picsum.photos/seed/${i + 1}/200/300`,
+  viewCount: Math.floor(Math.random() * 100),
+  likeCount: Math.floor(Math.random() * 50),
+  createdAt: {
+    seconds: Math.floor(Date.now() / 1000) - i * 86400,
+    nanoseconds: 0,
+  },
+  updatedAt: {
+    seconds: Math.floor(Date.now() / 1000) - i * 43200,
+    nanoseconds: 0,
+  },
+  authorId: `user${Math.floor(Math.random() * 5) + 1}`,
+  published: true,
 }));
 
 export default function Posts() {
@@ -58,8 +53,16 @@ export default function Posts() {
   const currentPosts = DUMMY_POSTS.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(DUMMY_POSTS.length / postsPerPage);
 
-  const handleRowClick = (postId: number) => {
+  const handleRowClick = (postId: string) => {
     navigate(`/posts/${postId}`);
+  };
+
+  const formatDate = (
+    timestamp: { seconds: number; nanoseconds: number } | undefined,
+  ) => {
+    return timestamp
+      ? new Date(timestamp.seconds * 1000).toLocaleDateString()
+      : "-";
   };
 
   return (
@@ -104,7 +107,7 @@ export default function Posts() {
                       {post.excerpt}
                     </div>
                     <div className="mt-1 text-sm text-muted-foreground lg:hidden">
-                      {post.author} · {post.createdAt}
+                      {post.authorId} · {formatDate(post.createdAt)}
                     </div>
                     {post.tags.length > 0 && (
                       <div className="mt-1 flex flex-wrap gap-1">
@@ -125,17 +128,17 @@ export default function Posts() {
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   <span className="rounded-lg bg-primary/10 px-2 py-1 text-sm text-primary">
-                    {post.category}
+                    {post.categoryId}
                   </span>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
-                  {post.author}
+                  {post.authorId}
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
-                  {post.createdAt}
+                  {formatDate(post.createdAt)}
                 </TableCell>
                 <TableCell className="hidden xl:table-cell">
-                  {post.updatedAt}
+                  {formatDate(post.updatedAt)}
                 </TableCell>
                 <TableCell className="hidden text-right sm:table-cell">
                   {post.viewCount}
