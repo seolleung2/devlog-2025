@@ -28,6 +28,7 @@ import {
 import { Post } from "@/types";
 import { db } from "@/lib/firebase/firebase";
 import { stripHtmlTags } from "@/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Posts() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,8 +88,74 @@ export default function Posts() {
   if (isLoading) {
     return (
       <div className="container">
-        <div className="flex h-[400px] items-center justify-center">
-          <div className="text-muted-foreground">로딩 중...</div>
+        <h1 className="mb-8 text-3xl font-bold">게시글 목록</h1>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="w-[360px] py-2 font-semibold">
+                  제목
+                </TableHead>
+                <TableHead className="hidden w-[200px] py-2 font-semibold md:table-cell">
+                  요약
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold sm:table-cell">
+                  카테고리
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold lg:table-cell">
+                  작성자
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold lg:table-cell">
+                  작성일
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold xl:table-cell">
+                  업데이트일
+                </TableHead>
+                <TableHead className="hidden w-[80px] py-2 text-right font-semibold sm:table-cell">
+                  조회
+                </TableHead>
+                <TableHead className="w-[80px] min-w-[80px] py-2 text-right font-semibold">
+                  좋아요
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 10 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell className="w-[360px] py-2">
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <div className="flex gap-1">
+                        <Skeleton className="h-3 w-12" />
+                        <Skeleton className="h-3 w-12" />
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden w-[200px] py-2 md:table-cell">
+                    <Skeleton className="h-4 w-full" />
+                  </TableCell>
+                  <TableCell className="hidden w-[100px] py-2 sm:table-cell">
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell className="hidden w-[100px] py-2 lg:table-cell">
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell className="hidden w-[100px] py-2 lg:table-cell">
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell className="hidden w-[100px] py-2 xl:table-cell">
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell className="hidden w-[80px] py-2 text-right sm:table-cell">
+                    <Skeleton className="ml-auto h-4 w-8" />
+                  </TableCell>
+                  <TableCell className="w-[80px] min-w-[80px] py-2 text-right">
+                    <Skeleton className="ml-auto h-4 w-8" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     );
