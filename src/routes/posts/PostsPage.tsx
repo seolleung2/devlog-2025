@@ -1,3 +1,8 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+
 import {
   Table,
   TableBody,
@@ -14,44 +19,33 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Post } from "@/types";
-
-const DUMMY_POSTS: Post[] = Array.from({ length: 23 }, (_, i) => ({
-  id: `post${i + 1}`,
-  title: `게시글 제목 ${i + 1}`,
-  content: `게시글 ${i + 1}의 전체 내용입니다.`,
-  excerpt: `이것은 게시글 ${i + 1}의 요약입니다.`,
-  categoryId: `category${Math.floor(Math.random() * 3) + 1}`,
-  tags: ["React", "TypeScript", "JavaScript"].slice(
-    0,
-    Math.floor(Math.random() * 3) + 1,
-  ),
-  thumbnailUrl: `https://picsum.photos/seed/${i + 1}/200/300`,
-  viewCount: Math.floor(Math.random() * 100),
-  likeCount: Math.floor(Math.random() * 50),
-  createdAt: {
-    seconds: Math.floor(Date.now() / 1000) - i * 86400,
-    nanoseconds: 0,
-  },
-  updatedAt: {
-    seconds: Math.floor(Date.now() / 1000) - i * 43200,
-    nanoseconds: 0,
-  },
-  authorId: `user${Math.floor(Math.random() * 5) + 1}`,
-  published: true,
-}));
+import { db } from "@/lib/firebase/firebase";
+import { stripHtmlTags } from "@/utils";
 
 export default function Posts() {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const postsPerPage = 10;
 
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const postsRef = collection(db, "posts");
+      const q = query(postsRef, orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Post[];
+    },
+  });
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = DUMMY_POSTS.slice(indexOfFirstPost, indexOfLastPost);
-  const totalPages = Math.ceil(DUMMY_POSTS.length / postsPerPage);
+  const currentPosts = posts?.slice(indexOfFirstPost, indexOfLastPost) ?? [];
+  const totalPages = Math.ceil((posts?.length ?? 0) / postsPerPage);
 
   const handleRowClick = (postId: string) => {
     navigate(`/posts/${postId}`);
@@ -65,6 +59,16 @@ export default function Posts() {
       : "-";
   };
 
+  if (isLoading) {
+    return (
+      <div className="container">
+        <div className="flex h-[400px] items-center justify-center">
+          <div className="text-muted-foreground">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <h1 className="mb-8 text-3xl font-bold">게시글 목록</h1>
@@ -72,26 +76,28 @@ export default function Posts() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="py-2 font-semibold">제목</TableHead>
-              <TableHead className="hidden py-2 font-semibold md:table-cell">
+              <TableHead className="w-[360px] py-2 font-semibold">
+                제목
+              </TableHead>
+              <TableHead className="hidden w-[200px] py-2 font-semibold md:table-cell">
                 요약
               </TableHead>
               <TableHead className="hidden w-[100px] py-2 font-semibold sm:table-cell">
                 카테고리
               </TableHead>
-              <TableHead className="hidden w-[150px] py-2 font-semibold lg:table-cell">
+              <TableHead className="hidden w-[100px] py-2 font-semibold lg:table-cell">
                 작성자
               </TableHead>
-              <TableHead className="hidden w-[150px] py-2 font-semibold lg:table-cell">
+              <TableHead className="hidden w-[100px] py-2 font-semibold lg:table-cell">
                 작성일
               </TableHead>
-              <TableHead className="hidden w-[150px] py-2 font-semibold xl:table-cell">
+              <TableHead className="hidden w-[100px] py-2 font-semibold xl:table-cell">
                 업데이트일
               </TableHead>
-              <TableHead className="hidden w-[100px] py-2 text-right font-semibold sm:table-cell">
+              <TableHead className="hidden w-[80px] py-2 text-right font-semibold sm:table-cell">
                 조회
               </TableHead>
-              <TableHead className="w-[100px] py-2 text-right font-semibold">
+              <TableHead className="w-[80px] min-w-[80px] py-2 text-right font-semibold">
                 좋아요
               </TableHead>
             </TableRow>
@@ -103,16 +109,18 @@ export default function Posts() {
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleRowClick(post.id)}
               >
-                <TableCell className="py-2">
+                <TableCell className="w-[360px] py-2">
                   <div className="space-y-2">
                     <span className="line-clamp-1 font-medium">
                       {post.title}
                     </span>
                     <div className="text-sm text-muted-foreground md:hidden">
-                      <p className="line-clamp-1">{post.excerpt}</p>
+                      <p className="line-clamp-1">
+                        {stripHtmlTags(post.excerpt)}
+                      </p>
                     </div>
                     <div className="text-sm text-muted-foreground lg:hidden">
-                      {post.authorId} · {formatDate(post.createdAt)}
+                      도토리묵 · {formatDate(post.createdAt)}
                     </div>
                     {post.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
@@ -128,27 +136,27 @@ export default function Posts() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="hidden py-2 text-sm text-muted-foreground md:table-cell">
-                  <p className="line-clamp-1">{post.excerpt}</p>
+                <TableCell className="hidden w-[200px] py-2 text-sm text-muted-foreground md:table-cell">
+                  <p className="line-clamp-1">{stripHtmlTags(post.excerpt)}</p>
                 </TableCell>
-                <TableCell className="hidden py-2 sm:table-cell">
-                  <span className="rounded-lg bg-blue-50 px-2 py-1 text-sm text-blue-600 transition-colors hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20">
+                <TableCell className="hidden w-[100px] py-2 sm:table-cell">
+                  <span className="rounded-lg bg-primary/5 px-2 py-1 text-sm text-primary transition-colors hover:bg-primary/10">
                     {post.categoryId}
                   </span>
                 </TableCell>
-                <TableCell className="hidden py-2 text-muted-foreground lg:table-cell">
-                  {post.authorId}
+                <TableCell className="hidden w-[100px] py-2 text-muted-foreground lg:table-cell">
+                  도토리묵
                 </TableCell>
-                <TableCell className="hidden py-2 text-muted-foreground lg:table-cell">
+                <TableCell className="hidden w-[100px] py-2 text-muted-foreground lg:table-cell">
                   {formatDate(post.createdAt)}
                 </TableCell>
-                <TableCell className="hidden py-2 text-muted-foreground xl:table-cell">
+                <TableCell className="hidden w-[100px] py-2 text-muted-foreground xl:table-cell">
                   {formatDate(post.updatedAt)}
                 </TableCell>
-                <TableCell className="hidden py-2 text-right text-muted-foreground sm:table-cell">
+                <TableCell className="hidden w-[80px] py-2 text-right text-muted-foreground sm:table-cell">
                   {post.viewCount}
                 </TableCell>
-                <TableCell className="py-2 text-right font-medium">
+                <TableCell className="w-[80px] min-w-[80px] py-2 text-right font-medium">
                   {post.likeCount}
                 </TableCell>
               </TableRow>
