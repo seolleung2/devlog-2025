@@ -1,83 +1,26 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, getDocs, orderBy, query, limit } from "firebase/firestore";
-import { db } from "@/lib/firebase/firebase";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Post } from "@/types";
-
-function getRecentPosts() {
-  const postsRef = collection(db, "posts");
-  const q = query(postsRef, orderBy("createdAt", "desc"), limit(7));
-  return getDocs(q);
+import { stripHtmlTags } from "@/utils";
+import PostCardSkeleton from "../common/PostCardSkeleton";
+interface RecentPostsProps {
+  posts: Post[];
+  isLoading: boolean;
 }
 
 const DEFAULT_THUMBNAIL = "/src/assets/default-thumbnail.jpg";
 
-function stripHtmlTags(html: string) {
-  if (!html) return "";
-
-  const withoutImages = html.replace(
-    /<img[^>]*>|<img.*?\/?>|\s*<img[^>]*src="[^"]*"[^>]*>/g,
-    "",
-  );
-
-  const withoutFirebaseUrls = withoutImages.replace(
-    /<img src="https:\/\/firebasestorage\.googleapis\.com[^"]*"[^>]*>/g,
-    "",
-  );
-
-  const withoutPlainTextUrls = withoutFirebaseUrls.replace(
-    /<img src="https:\/\/firebasestorage\.googleapis\.com[^"]*"/g,
-    "",
-  );
-
-  const withoutUrls = withoutPlainTextUrls
-    .replace(
-      /<img src="https:\/\/firebasestorage\.googleapis\.com.*?(?=")/g,
-      "",
-    )
-    .replace(/https:\/\/firebasestorage\.googleapis\.com[^\s]*/g, "")
-    .replace(/<img src="/g, "");
-
-  const withoutTags = withoutUrls.replace(/<[^>]*>/g, "");
-  const decoded = withoutTags.replace(/&[^;]+;/g, " ");
-
-  return decoded.replace(/\s+/g, " ").trim();
-}
-
-export function RecentPosts() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export function RecentPosts({ posts, isLoading }: RecentPostsProps) {
   const navigate = useNavigate();
 
   const handlePostClick = (postId: string) => {
     navigate(`/posts/${postId}`);
   };
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const snapshot = await getRecentPosts();
-        const postsData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Post[];
-        setPosts(postsData);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
   if (isLoading) {
-    return <RecentPostsSkeleton />;
+    return <PostCardSkeleton title="최신 게시글" />;
   }
 
   const [featuredPost, ...restPosts] = posts;
@@ -311,34 +254,6 @@ export function RecentPosts() {
             </Card>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-// 로딩 상태를 위한 스켈레톤 컴포넌트
-export function RecentPostsSkeleton() {
-  return (
-    <section>
-      <h2 className="mb-6 text-2xl font-bold tracking-tight">최신 게시글</h2>
-      <div className="space-y-6">
-        <Card className="overflow-hidden">
-          <CardContent className="p-0">
-            <div className="grid md:grid-cols-2">
-              <Skeleton className="aspect-[16/10] md:aspect-auto" />
-              <div className="flex flex-col space-y-4 p-6">
-                <Skeleton className="h-6 w-24" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-20 w-full" />
-                <div className="flex gap-3">
-                  <Skeleton className="h-4 w-16" />
-                  <Skeleton className="h-4 w-16" />
-                  <Skeleton className="ml-auto h-4 w-24" />
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </section>
   );

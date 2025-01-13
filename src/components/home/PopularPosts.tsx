@@ -1,4 +1,3 @@
-import { Post, Category } from "@/types";
 import {
   Carousel,
   CarouselContent,
@@ -8,13 +7,20 @@ import {
 } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import PostCardSkeleton from "../common/PostCardSkeleton";
+import { stripHtmlTags } from "@/utils";
+import { Post } from "@/types";
 
 interface PopularPostsProps {
   posts: Post[];
-  categories: Category[];
+  isLoading: boolean;
 }
 
-export function PopularPosts({ posts, categories }: PopularPostsProps) {
+export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
+  if (isLoading) {
+    return <PostCardSkeleton title="인기 게시글" count={3} />;
+  }
+
   return (
     <section className="relative">
       <h2 className="mb-6 text-2xl font-bold tracking-tight">인기 게시글</h2>
@@ -31,9 +37,17 @@ export function PopularPosts({ posts, categories }: PopularPostsProps) {
               />
             </div>
             <div className="flex min-w-0 flex-1 flex-col">
-              <Badge variant="outline" className="mb-1 w-fit">
-                {categories.find((c) => c.id === post.categoryId)?.name}
-              </Badge>
+              <div className="mb-1 flex flex-wrap gap-1">
+                {post.tags?.length ? (
+                  post.tags.map((tag) => (
+                    <Badge key={tag} variant="outline">
+                      {tag}
+                    </Badge>
+                  ))
+                ) : (
+                  <Badge variant="outline">태그없음</Badge>
+                )}
+              </div>
               <h3 className="mb-auto line-clamp-2 text-base font-semibold">
                 {post.title}
               </h3>
@@ -98,14 +112,22 @@ export function PopularPosts({ posts, categories }: PopularPostsProps) {
                       />
                     </div>
                     <CardContent className="flex flex-1 flex-col p-4">
-                      <Badge variant="outline" className="mb-2 w-fit">
-                        {categories.find((c) => c.id === post.categoryId)?.name}
-                      </Badge>
+                      <div className="mb-2 flex flex-wrap gap-1">
+                        {post.tags?.length ? (
+                          post.tags.map((tag) => (
+                            <Badge key={tag} variant="outline">
+                              {tag}
+                            </Badge>
+                          ))
+                        ) : (
+                          <Badge variant="outline">태그없음</Badge>
+                        )}
+                      </div>
                       <h3 className="mb-2 line-clamp-2 text-lg font-semibold">
                         {post.title}
                       </h3>
                       <p className="mb-auto line-clamp-2 text-sm text-muted-foreground">
-                        {post.excerpt}
+                        {stripHtmlTags(post.excerpt)}
                       </p>
                       <div className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
