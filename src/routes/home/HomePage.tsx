@@ -1,10 +1,49 @@
+import { useEffect, useState } from "react";
+import { collection, getDocs, orderBy, query, limit } from "firebase/firestore";
+
+import { db } from "@/lib/firebase/firebase";
 import { Separator } from "@/components/ui/separator";
+import { CategoryList } from "@/components/home/CategoryList";
 import { PopularPosts } from "@/components/home/PopularPosts";
 import { RecentPosts } from "@/components/home/RecentPosts";
-import { CategoryList } from "@/components/home/CategoryList";
-import { MOCK_POSTS, MOCK_CATEGORIES } from "@/lib/mock-data";
+import { Post } from "@/types";
+import { MOCK_CATEGORIES } from "@/lib/mock-data";
 
 export default function HomePage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const postsQuery = query(
+          collection(db, "posts"),
+          orderBy("createdAt", "desc"),
+          limit(10),
+        );
+        const postsSnapshot = await getDocs(postsQuery);
+        const postsData = postsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Post[];
+
+        setPosts(postsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
+
+  const popularPosts = [...posts]
+    .sort((a, b) => b.viewCount + b.likeCount - (a.viewCount + a.likeCount))
+    .slice(0, 5);
+
+  const recentPosts = posts.slice(0, 5);
+
   return (
     <main className="flex-1">
       {/* Hero 섹션 */}
@@ -26,12 +65,9 @@ export default function HomePage() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* 왼쪽: 인기글과 최신글 */}
           <div className="space-y-10 md:col-span-3">
-            <PopularPosts
-              posts={MOCK_POSTS.slice(0, 5)}
-              categories={MOCK_CATEGORIES}
-            />
+            <PopularPosts posts={popularPosts} isLoading={loading} />
             <Separator className="my-8" />
-            <RecentPosts />
+            <RecentPosts posts={recentPosts} isLoading={loading} />
           </div>
 
           {/* 오른쪽: 카테고리 메뉴 */}
