@@ -1,14 +1,16 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Rss, Search, Sun, Volume2, X } from "lucide-react";
+
 import AuthButton from "@/components/features/AuthButton";
 import { Button } from "@/components/ui/button";
-import { Rss, Search, Sun, Volume2, X } from "lucide-react";
-import { useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 
 const GENERAL_LINKS = [
   { label: "소개", href: "/about" },
-  { label: "블로그", href: "/blog" },
-  { label: "연락하기", href: "/contact" },
+  { label: "블로그", href: "/posts" },
+  { label: "방명록", href: "/guestbook" },
 ] as const;
 
 export default function Header() {
@@ -19,13 +21,13 @@ export default function Header() {
     <div className="flex items-center gap-6">
       <nav className="flex items-center gap-6">
         {GENERAL_LINKS.map((link) => (
-          <a
+          <Link
             key={link.href}
-            href={link.href}
+            to={link.href}
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             {link.label}
-          </a>
+          </Link>
         ))}
       </nav>
       <div className="flex items-center gap-2 border-l pl-6">
@@ -93,12 +95,12 @@ export default function Header() {
       <div className="mx-auto max-w-7xl">
         <div className={cn(!isDesktop && "px-4")}>
           <div className="flex h-14 items-center justify-between border-b md:h-16">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-lg font-semibold tracking-tight transition-colors hover:text-primary"
             >
               기술 블로그
-            </a>
+            </Link>
 
             {isDesktop ? <DesktopNav /> : <AuthButton />}
           </div>
@@ -112,13 +114,13 @@ export default function Header() {
           >
             <nav className="flex flex-col p-4">
               {GENERAL_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
+                  to={link.href}
                   className="px-4 py-2 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-primary"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <AuthButton variant="menu" />
               <div className="border-b pt-2" />
