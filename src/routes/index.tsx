@@ -5,7 +5,7 @@ import PrivateRoute from "@/components/features/PrivateRoute";
 import LoginPage from "./auth/LoginPage";
 import RegisterPage from "./auth/RegisterPage";
 
-import BlogListPage from "./blog/BlogListPage";
+import PostsPage from "./posts/PostsPage";
 import PostDetailPage from "./posts/PostDetailPage";
 
 import DashboardPage from "./admin/DashboardPage";
@@ -13,12 +13,17 @@ import PostManagePage from "./admin/PostManagePage";
 import HomePage from "./home/HomePage";
 import WritePage from "./admin/WritePage";
 
+import About from "./about/About";
+import Guestbook from "./guestbook/Guestbook";
+
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "about", element: <About /> },
+      { path: "guestbook", element: <Guestbook /> },
       {
         path: "auth",
         children: [
@@ -29,7 +34,7 @@ export const router = createBrowserRouter([
       {
         path: "posts",
         children: [
-          { index: true, element: <BlogListPage /> }, // 추후 작업시 변경
+          { index: true, element: <PostsPage /> },
           { path: ":id", element: <PostDetailPage /> },
         ],
       },
