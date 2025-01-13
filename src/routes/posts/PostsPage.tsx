@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  collection,
+  orderBy,
+  query,
+  onSnapshot,
+  getDocs,
+} from "firebase/firestore";
 
 import {
   Table,
@@ -27,6 +33,7 @@ export default function Posts() {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const postsPerPage = 10;
+  const queryClient = useQueryClient();
 
   const { data: posts, isLoading } = useQuery({
     queryKey: ["posts"],
@@ -40,12 +47,30 @@ export default function Posts() {
         ...doc.data(),
       })) as Post[];
     },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
+
+  useEffect(() => {
+    const postsRef = collection(db, "posts");
+    const q = query(postsRef, orderBy("createdAt", "desc"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const posts = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Post[];
+      queryClient.setQueryData(["posts"], posts);
+    });
+
+    return () => unsubscribe();
+  }, [queryClient]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts?.slice(indexOfFirstPost, indexOfLastPost) ?? [];
-  const totalPages = Math.ceil((posts?.length ?? 0) / postsPerPage);
+  const currentPosts =
+    (posts as Post[])?.slice(indexOfFirstPost, indexOfLastPost) ?? [];
+  const totalPages = Math.ceil(((posts as Post[])?.length ?? 0) / postsPerPage);
 
   const handleRowClick = (postId: string) => {
     navigate(`/posts/${postId}`);
