@@ -15,6 +15,7 @@ interface CreatePostData {
   tags: string[];
   thumbnailFile?: File;
   authorId: string;
+  authorName: string;
 }
 
 export async function createPost({
@@ -24,6 +25,7 @@ export async function createPost({
   tags,
   thumbnailFile,
   authorId,
+  authorName,
 }: CreatePostData): Promise<string> {
   try {
     let thumbnailUrl: string | undefined;
@@ -47,11 +49,12 @@ export async function createPost({
       categoryId,
       tags,
       ...(thumbnailUrl && { thumbnailUrl }),
+      authorId,
+      authorName,
       viewCount: 0,
       likeCount: 0,
       createdAt: serverTimestamp() as FieldValue,
       updatedAt: serverTimestamp() as FieldValue,
-      authorId,
       published: true,
     } satisfies Omit<Post, "id" | "createdAt" | "updatedAt"> & {
       createdAt: FieldValue;
