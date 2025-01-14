@@ -1,3 +1,5 @@
+import { FieldValue, Timestamp } from "firebase/firestore";
+
 export interface Post {
   id: string;
   title: string;
@@ -8,15 +10,10 @@ export interface Post {
   thumbnailUrl?: string;
   viewCount: number;
   likeCount: number;
-  createdAt: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  updatedAt?: {
-    seconds: number;
-    nanoseconds: number;
-  };
+  createdAt: Timestamp | FieldValue;
+  updatedAt?: Timestamp | FieldValue;
   authorId: string;
+  authorName: string;
   published: boolean;
 }
 
@@ -26,4 +23,13 @@ export interface Category {
   description?: string; // 카테고리 설명
   order: number; // 표시 순서
   postCount: number; // 해당 카테고리의 게시글 수
+}
+
+export interface User {
+  id: string;
+  email: string;
+  username: string;
+  avatarUrl?: string;
+  createdAt: Timestamp | FieldValue;
+  updatedAt?: Timestamp | FieldValue;
 }
