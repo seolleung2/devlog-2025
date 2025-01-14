@@ -1,8 +1,11 @@
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { signInWithPopup, signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { signInWithPopup, signOut } from "firebase/auth";
-import { auth, provider } from "@/lib/firebase/firebase";
+import { auth, provider, db } from "@/lib/firebase/firebase";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import type { User } from "@/types";
 
 interface AuthButtonProps {
   variant?: "default" | "menu";
@@ -11,16 +14,57 @@ interface AuthButtonProps {
 export default function AuthButton({ variant = "default" }: AuthButtonProps) {
   const { user, loading } = useAuth();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const navigate = useNavigate();
 
   if (isDesktop === null || loading) {
     return null;
   }
 
-  const handleAuth = () => {
+  const createUserDocument = async (userId: string, email: string) => {
+    try {
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        const userData: User = {
+          id: userId,
+          email: email,
+          username: "",
+          createdAt: serverTimestamp(),
+        };
+        await setDoc(userRef, userData);
+        return true;
+      }
+
+      const userData = userSnap.data() as User;
+      return !userData.username;
+    } catch (error) {
+      console.error("Error creating user document:", error);
+      throw error;
+    }
+  };
+
+  const handleAuth = async () => {
     if (user) {
-      signOut(auth);
+      await signOut(auth);
     } else {
-      signInWithPopup(auth, provider);
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const { user: signedInUser } = result;
+
+        if (signedInUser.email) {
+          const needsUsername = await createUserDocument(
+            signedInUser.uid,
+            signedInUser.email,
+          );
+
+          if (needsUsername) {
+            navigate("/profile/setup");
+          }
+        }
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
     }
   };
 
