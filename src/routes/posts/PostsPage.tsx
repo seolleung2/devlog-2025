@@ -163,6 +163,56 @@ export default function Posts() {
     );
   }
 
+  if (!isLoading && (!posts || posts.length === 0)) {
+    return (
+      <div className="container">
+        <h1 className="mb-8 text-3xl font-bold">게시글 목록</h1>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="w-[360px] py-2 font-semibold">
+                  제목
+                </TableHead>
+                <TableHead className="hidden w-[200px] py-2 font-semibold md:table-cell">
+                  요약
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold sm:table-cell">
+                  카테고리
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold lg:table-cell">
+                  작성자
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold lg:table-cell">
+                  작성일
+                </TableHead>
+                <TableHead className="hidden w-[100px] py-2 font-semibold xl:table-cell">
+                  업데이트일
+                </TableHead>
+                <TableHead className="hidden w-[80px] py-2 text-right font-semibold sm:table-cell">
+                  조회
+                </TableHead>
+                <TableHead className="w-[80px] min-w-[80px] py-2 text-right font-semibold">
+                  좋아요
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="h-96 text-center text-muted-foreground"
+                >
+                  작성된 게시글이 없습니다.
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <h1 className="mb-8 text-3xl font-bold">게시글 목록</h1>
@@ -213,8 +263,9 @@ export default function Posts() {
                         {stripHtmlTags(post.excerpt)}
                       </p>
                     </div>
-                    <div className="text-sm text-muted-foreground lg:hidden">
-                      도토리묵 · {formatDate(post.createdAt)}
+                    <div className="flex items-center text-sm text-muted-foreground lg:hidden">
+                      <span className="pl-0">{post.authorName}</span> ·{" "}
+                      <span className="p-2">{formatDate(post.createdAt)}</span>
                     </div>
                     {post.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
@@ -239,7 +290,7 @@ export default function Posts() {
                   </span>
                 </TableCell>
                 <TableCell className="hidden w-[100px] py-2 text-muted-foreground lg:table-cell">
-                  도토리묵
+                  {post.authorName}
                 </TableCell>
                 <TableCell className="hidden w-[100px] py-2 text-muted-foreground lg:table-cell">
                   {formatDate(post.createdAt)}
