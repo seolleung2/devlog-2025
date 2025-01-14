@@ -19,6 +19,8 @@ interface PopularPostsProps {
   isLoading: boolean;
 }
 
+const DEFAULT_THUMBNAIL = "/src/assets/default-thumbnail.jpg";
+
 export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
   if (isLoading) {
     return <PostCardSkeleton title="인기 게시글" count={3} />;
@@ -50,7 +52,7 @@ export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
           >
             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md">
               <img
-                src={post.thumbnailUrl}
+                src={post.thumbnailUrl || DEFAULT_THUMBNAIL}
                 alt=""
                 className="h-full w-full object-cover"
               />
@@ -132,7 +134,7 @@ export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
                     <div className="flex h-full flex-col">
                       <div className="aspect-[16/10] overflow-hidden">
                         <img
-                          src={post.thumbnailUrl}
+                          src={post.thumbnailUrl || DEFAULT_THUMBNAIL}
                           alt=""
                           className="h-full w-full rounded-t-lg object-cover transition-transform duration-300 hover:scale-105"
                         />
