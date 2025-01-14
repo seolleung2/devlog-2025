@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { Heart, Eye, Calendar, Clock, Menu } from "lucide-react";
@@ -176,13 +176,22 @@ export default function PostDetailPage() {
     .replace(/<p>\s*<\/p>/g, "")
     .replace(/<br\s*\/?>/g, "");
 
-  const createdDate = new Date(post.createdAt.seconds * 1000);
+  const createdDate =
+    post.createdAt instanceof Timestamp
+      ? new Date(post.createdAt.seconds * 1000)
+      : new Date();
   const formattedDate = format(createdDate, "PPP", { locale: ko });
   const formattedTime = format(createdDate, "a h:mm", { locale: ko });
   const formattedUpdateDate = post.updatedAt
-    ? format(new Date(post.updatedAt.seconds * 1000), "PPP a h:mm", {
-        locale: ko,
-      })
+    ? format(
+        post.updatedAt instanceof Timestamp
+          ? new Date(post.updatedAt.seconds * 1000)
+          : new Date(),
+        "PPP a h:mm",
+        {
+          locale: ko,
+        },
+      )
     : null;
 
   return (
@@ -262,7 +271,7 @@ export default function PostDetailPage() {
               <div
                 ref={contentRef}
                 dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                className="prose prose-slate prose-headings:mb-3 prose-headings:font-semibold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:font-bold prose-h3:text-xl prose-h3:font-bold prose-p:text-base prose-p:leading-relaxed prose-p:text-gray-600 prose-img:my-6 prose-img:rounded-lg prose-img:shadow-md max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                className="prose prose-slate max-w-none prose-headings:mb-3 prose-headings:font-semibold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:font-bold prose-h3:text-xl prose-h3:font-bold prose-p:text-base prose-p:leading-relaxed prose-p:text-gray-600 prose-img:my-6 prose-img:rounded-lg prose-img:shadow-md [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
               />
 
               <div className="mt-12 flex flex-wrap gap-2">
