@@ -15,6 +15,7 @@ import WritePage from "./admin/WritePage";
 
 import About from "./about/About";
 import Guestbook from "./guestbook/Guestbook";
+import ProfileSetupPage from "./profile/ProfileSetupPage";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,19 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "about", element: <About /> },
       { path: "guestbook", element: <Guestbook /> },
+      {
+        path: "profile",
+        children: [
+          {
+            path: "setup",
+            element: (
+              <PrivateRoute>
+                <ProfileSetupPage />
+              </PrivateRoute>
+            ),
+          },
+        ],
+      },
       {
         path: "auth",
         children: [

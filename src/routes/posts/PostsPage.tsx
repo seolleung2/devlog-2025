@@ -7,6 +7,8 @@ import {
   query,
   onSnapshot,
   getDocs,
+  Timestamp,
+  FieldValue,
 } from "firebase/firestore";
 
 import {
@@ -77,12 +79,12 @@ export default function Posts() {
     navigate(`/posts/${postId}`);
   };
 
-  const formatDate = (
-    timestamp: { seconds: number; nanoseconds: number } | undefined,
-  ) => {
-    return timestamp
-      ? new Date(timestamp.seconds * 1000).toLocaleDateString()
-      : "-";
+  const formatDate = (timestamp: Timestamp | FieldValue | undefined) => {
+    if (!timestamp || timestamp instanceof FieldValue) {
+      return "-";
+    }
+
+    return new Date(timestamp.toDate()).toLocaleDateString();
   };
 
   if (isLoading) {
