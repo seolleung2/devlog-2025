@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ImageIcon, X } from "lucide-react";
 import { Editor } from "@toast-ui/react-editor";
 import { useNavigate } from "react-router-dom";
 
+import { AuthContext } from "@/contexts/AuthContext";
 import { storage } from "@/lib/firebase/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -44,6 +45,7 @@ export default function WritePage() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { userData } = useContext(AuthContext);
 
   const uid = user?.uid;
 
@@ -85,6 +87,15 @@ export default function WritePage() {
         variant: "destructive",
         title: "인증 오류",
         description: "로그인이 필요합니다.",
+      });
+      return;
+    }
+
+    if (!userData?.username) {
+      toast({
+        variant: "destructive",
+        title: "사용자 정보 오류",
+        description: "사용자 이름이 설정되지 않았습니다.",
       });
       return;
     }
@@ -139,6 +150,7 @@ export default function WritePage() {
         tags,
         thumbnailFile,
         authorId: uid,
+        authorName: userData.username,
       });
 
       toast({
