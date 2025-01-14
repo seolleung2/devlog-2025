@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { Timestamp } from "firebase/firestore";
+import { FileText } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,15 +17,27 @@ const DEFAULT_THUMBNAIL = "/src/assets/default-thumbnail.jpg";
 export function RecentPosts({ posts, isLoading }: RecentPostsProps) {
   const navigate = useNavigate();
 
-  const handlePostClick = (postId: string) => {
-    navigate(`/posts/${postId}`);
-  };
-
   if (isLoading) {
     return <PostCardSkeleton title="최신 게시글" />;
   }
 
+  if (!posts?.length) {
+    return (
+      <section>
+        <h2 className="mb-6 text-2xl font-bold tracking-tight">최신 게시글</h2>
+        <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-lg bg-muted/50">
+          <FileText className="h-12 w-12 text-muted-foreground/50" />
+          <p className="text-muted-foreground">게시물이 없습니다.</p>
+        </div>
+      </section>
+    );
+  }
+
   const [featuredPost, ...restPosts] = posts;
+
+  const handlePostClick = (postId: string) => {
+    navigate(`/posts/${postId}`);
+  };
 
   return (
     <section>
@@ -91,12 +105,16 @@ export function RecentPosts({ posts, isLoading }: RecentPostsProps) {
                   </span>
                   <time
                     dateTime={new Date(
-                      featuredPost.createdAt.seconds * 1000,
+                      featuredPost.createdAt instanceof Timestamp
+                        ? featuredPost.createdAt.seconds * 1000
+                        : 0,
                     ).toISOString()}
                     className="ml-auto"
                   >
                     {new Date(
-                      featuredPost.createdAt.seconds * 1000,
+                      featuredPost.createdAt instanceof Timestamp
+                        ? featuredPost.createdAt.seconds * 1000
+                        : 0,
                     ).toLocaleDateString()}
                   </time>
                 </div>
@@ -166,12 +184,16 @@ export function RecentPosts({ posts, isLoading }: RecentPostsProps) {
                   </span>
                   <time
                     dateTime={new Date(
-                      post.createdAt.seconds * 1000,
+                      post.createdAt instanceof Timestamp
+                        ? post.createdAt.seconds * 1000
+                        : 0,
                     ).toISOString()}
                     className="ml-auto"
                   >
                     {new Date(
-                      post.createdAt.seconds * 1000,
+                      post.createdAt instanceof Timestamp
+                        ? post.createdAt.seconds * 1000
+                        : 0,
                     ).toLocaleDateString()}
                   </time>
                 </div>
@@ -241,12 +263,16 @@ export function RecentPosts({ posts, isLoading }: RecentPostsProps) {
                   </span>
                   <time
                     dateTime={new Date(
-                      post.createdAt.seconds * 1000,
+                      post.createdAt instanceof Timestamp
+                        ? post.createdAt.seconds * 1000
+                        : 0,
                     ).toISOString()}
                     className="ml-auto"
                   >
                     {new Date(
-                      post.createdAt.seconds * 1000,
+                      post.createdAt instanceof Timestamp
+                        ? post.createdAt.seconds * 1000
+                        : 0,
                     ).toLocaleDateString()}
                   </time>
                 </div>

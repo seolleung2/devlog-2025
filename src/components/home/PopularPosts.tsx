@@ -11,6 +11,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import PostCardSkeleton from "../common/PostCardSkeleton";
 import { stripHtmlTags } from "@/utils";
 import { Post } from "@/types";
+import { Timestamp } from "firebase/firestore";
+import { FileText } from "lucide-react";
 
 interface PopularPostsProps {
   posts: Post[];
@@ -20,6 +22,18 @@ interface PopularPostsProps {
 export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
   if (isLoading) {
     return <PostCardSkeleton title="인기 게시글" count={3} />;
+  }
+
+  if (!posts?.length) {
+    return (
+      <section className="relative">
+        <h2 className="mb-6 text-2xl font-bold tracking-tight">인기 게시글</h2>
+        <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-lg bg-muted/50">
+          <FileText className="h-12 w-12 text-muted-foreground/50" />
+          <p className="text-muted-foreground">게시물이 없습니다.</p>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -85,12 +99,18 @@ export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
                   {post.likeCount}
                 </span>
                 <time
-                  dateTime={new Date(
-                    post.createdAt.seconds * 1000,
-                  ).toISOString()}
+                  dateTime={
+                    post.createdAt instanceof Timestamp
+                      ? new Date(post.createdAt.seconds * 1000).toISOString()
+                      : ""
+                  }
                   className="ml-auto"
                 >
-                  {new Date(post.createdAt.seconds * 1000).toLocaleDateString()}
+                  {post.createdAt instanceof Timestamp
+                    ? new Date(
+                        post.createdAt.seconds * 1000,
+                      ).toLocaleDateString()
+                    : ""}
                 </time>
               </div>
             </div>
@@ -98,7 +118,7 @@ export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
         ))}
       </div>
 
-      {/* 데스크톱 뷰 */}
+      {/* 데스크크톱 뷰 */}
       <div className="hidden md:block">
         <Carousel opts={{ align: "start", loop: true }} className="w-full">
           <CarouselContent className="-ml-2 grid-rows-1 md:-ml-4">
@@ -164,14 +184,20 @@ export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
                             {post.likeCount}
                           </span>
                           <time
-                            dateTime={new Date(
-                              post.createdAt.seconds * 1000,
-                            ).toISOString()}
+                            dateTime={
+                              post.createdAt instanceof Timestamp
+                                ? new Date(
+                                    post.createdAt.seconds * 1000,
+                                  ).toISOString()
+                                : ""
+                            }
                             className="ml-auto"
                           >
-                            {new Date(
-                              post.createdAt.seconds * 1000,
-                            ).toLocaleDateString()}
+                            {post.createdAt instanceof Timestamp
+                              ? new Date(
+                                  post.createdAt.seconds * 1000,
+                                ).toLocaleDateString()
+                              : ""}
                           </time>
                         </div>
                       </CardContent>
