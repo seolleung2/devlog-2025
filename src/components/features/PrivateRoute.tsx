@@ -3,9 +3,13 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
+  requireAdmin?: boolean;
 }
 
-export default function PrivateRoute({ children }: PrivateRouteProps) {
+export default function PrivateRoute({
+  children,
+  requireAdmin = false,
+}: PrivateRouteProps) {
   const { user, loading, isAdmin } = useAuth();
   const location = useLocation();
 
@@ -13,7 +17,11 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
     return <div>Loading...</div>;
   }
 
-  if (!user || !isAdmin) {
+  if (!user) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+  if (requireAdmin && !isAdmin) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 

@@ -1,6 +1,7 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import RootLayout from "@/components/layout/RootLayout";
 import PrivateRoute from "@/components/features/PrivateRoute";
+import RequireUsername from "@/components/features/RequireUsername";
 
 import LoginPage from "./auth/LoginPage";
 import RegisterPage from "./auth/RegisterPage";
@@ -20,21 +21,26 @@ import ProfileSetupPage from "./profile/ProfileSetupPage";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: (
+      <RequireUsername>
+        <RootLayout />
+      </RequireUsername>
+    ),
     children: [
       { index: true, element: <HomePage /> },
       { path: "about", element: <About /> },
       { path: "guestbook", element: <Guestbook /> },
       {
         path: "profile",
+        element: (
+          <PrivateRoute>
+            <Outlet />
+          </PrivateRoute>
+        ),
         children: [
           {
             path: "setup",
-            element: (
-              <PrivateRoute>
-                <ProfileSetupPage />
-              </PrivateRoute>
-            ),
+            element: <ProfileSetupPage />,
           },
         ],
       },
@@ -55,7 +61,7 @@ export const router = createBrowserRouter([
       {
         path: "admin",
         element: (
-          <PrivateRoute>
+          <PrivateRoute requireAdmin>
             <Outlet />
           </PrivateRoute>
         ),
