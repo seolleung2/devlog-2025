@@ -7,12 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Post } from "@/types";
 import { stripHtmlTags } from "@/utils";
 import PostCardSkeleton from "../common/PostCardSkeleton";
+import defaultThumbnail from "@/assets/default-thumbnail.jpg";
+
 interface RecentPostsProps {
   posts: Post[];
   isLoading: boolean;
 }
 
-const DEFAULT_THUMBNAIL = "/src/assets/default-thumbnail.jpg";
+const DEFAULT_THUMBNAIL = defaultThumbnail;
 
 export function RecentPosts({ posts, isLoading }: RecentPostsProps) {
   const navigate = useNavigate();
