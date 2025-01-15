@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { Timestamp } from "firebase/firestore";
+import { FileText } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -11,15 +13,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import PostCardSkeleton from "../common/PostCardSkeleton";
 import { stripHtmlTags } from "@/utils";
 import { Post } from "@/types";
-import { Timestamp } from "firebase/firestore";
-import { FileText } from "lucide-react";
+
+import defaultThumbnail from "@/assets/default-thumbnail.jpg";
 
 interface PopularPostsProps {
   posts: Post[];
   isLoading: boolean;
 }
 
-const DEFAULT_THUMBNAIL = "/src/assets/default-thumbnail.jpg";
+const DEFAULT_THUMBNAIL = defaultThumbnail;
 
 export function PopularPosts({ posts, isLoading }: PopularPostsProps) {
   if (isLoading) {
