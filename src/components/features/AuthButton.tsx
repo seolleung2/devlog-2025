@@ -58,9 +58,11 @@ export default function AuthButton({ variant = "default" }: AuthButtonProps) {
             signedInUser.email,
           );
 
-          if (needsUsername) {
-            navigate("/profile/setup");
-          }
+          setTimeout(() => {
+            if (needsUsername) {
+              navigate("/profile/setup");
+            }
+          }, 100);
         }
       } catch (error) {
         console.error("Login failed:", error);
