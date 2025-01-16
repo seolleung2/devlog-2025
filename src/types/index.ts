@@ -33,3 +33,24 @@ export interface User {
   createdAt: Timestamp | FieldValue;
   updatedAt?: Timestamp | FieldValue;
 }
+
+export interface Comment {
+  id: number;
+  author: string;
+  content: string;
+  createdAt: string;
+  replies: Reply[];
+}
+
+export interface Reply {
+  id: number;
+  author: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface CommentFormData {
+  author: string;
+  content: string;
+  createdAt: string;
+}
