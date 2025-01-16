@@ -4,6 +4,7 @@ import { Comment, CommentFormData } from "../types";
 
 interface CommentCardProps {
   comment: Comment;
+  // eslint-disable-next-line no-unused-vars
   onAddReply: (commentId: number, reply: CommentFormData) => void;
 }
 

@@ -2,6 +2,7 @@ import { useState, FormEvent } from "react";
 import { CommentFormData } from "../types";
 
 interface CommentFormProps {
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (data: CommentFormData) => void;
   onClose: () => void;
 }
