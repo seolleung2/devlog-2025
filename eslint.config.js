@@ -27,12 +27,18 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "no-unused-vars": "warn",
+      "no-unused-vars": "off", // TypeScript 버전을 사용할 것이므로 기본 규칙은 끔
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        { argsIgnorePattern: "^_" },
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
       ],
     },
   },
