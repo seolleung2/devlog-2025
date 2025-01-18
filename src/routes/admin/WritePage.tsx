@@ -175,7 +175,6 @@ export default function WritePage() {
 
   const handleImageUpload = async (
     blob: Blob | File,
-    // eslint-disable-next-line no-unused-vars
     callback: (url: string, altText: string) => void,
   ) => {
     try {
