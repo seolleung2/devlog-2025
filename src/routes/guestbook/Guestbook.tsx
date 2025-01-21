@@ -87,12 +87,20 @@ export default function GuestbookPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-4">
-      <h1 className="mb-8 text-3xl font-bold">방명록</h1>
-      <CommentForm
-        onSubmit={(content, isSecret) => addComment(content, isSecret)}
-      />
-      <div className="mt-8 space-y-4">{renderComments()}</div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-full p-6">
+        <h1 className="mb-6 text-center text-4xl font-extrabold tracking-tight text-gray-900">
+          <span>방명록</span>
+        </h1>
+        <div className="rounded-lg bg-white p-6 shadow-lg">
+          <CommentForm
+            onSubmit={(content, isSecret) => addComment(content, isSecret)}
+          />
+          <div className="mt-10 space-y-6 divide-y divide-gray-200">
+            {renderComments()}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
