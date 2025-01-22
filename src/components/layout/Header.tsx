@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Rss, Search, Sun, Volume2, X } from "lucide-react";
+import { Moon, Rss, Search, Sun, Volume2, X } from "lucide-react";
 
 import AuthButton from "@/components/features/AuthButton";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,13 @@ const GENERAL_LINKS = [
   { label: "방명록", href: "/guestbook" },
 ] as const;
 
-export default function Header() {
+export default function Header({
+  toggleDarkMode,
+  isDarkMode,
+}: {
+  toggleDarkMode: () => void;
+  isDarkMode: boolean;
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)") ?? false;
 
@@ -79,8 +85,17 @@ export default function Header() {
         <Volume2 className="h-4 w-4" />
         <span className="sr-only">소리</span>
       </Button>
-      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-        <Sun className="h-4 w-4" />
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 rounded-full"
+        onClick={toggleDarkMode}
+      >
+        {isDarkMode ? (
+          <Sun className="h-4 w-4" />
+        ) : (
+          <Moon className="h-4 w-4" />
+        )}
         <span className="sr-only">테마</span>
       </Button>
       <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">

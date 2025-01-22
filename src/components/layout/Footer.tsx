@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Volume2, Sun, Rss } from "lucide-react";
+import { Search, Volume2, Sun, Rss, Moon } from "lucide-react";
 import { SiGithub, SiX, SiLinkedin } from "@icons-pack/react-simple-icons";
 
-export default function Footer() {
+export default function Footer({
+  toggleDarkMode,
+  isDarkMode,
+}: {
+  toggleDarkMode: () => void;
+  isDarkMode: boolean;
+}) {
   return (
     <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="px-4 py-12 md:py-16">
@@ -131,8 +137,13 @@ export default function Footer() {
                 variant="ghost"
                 size="icon"
                 className="h-9 w-9 rounded-full"
+                onClick={toggleDarkMode}
               >
-                <Sun className="h-4 w-4" />
+                {isDarkMode ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
               </Button>
               <Button
                 variant="ghost"
