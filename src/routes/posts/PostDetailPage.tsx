@@ -119,7 +119,7 @@ export default function PostDetailPage() {
       className={`group flex w-full items-center rounded-md py-2 text-left transition-all ${heading.level === 1 ? "font-bold" : "font-medium"} ${
         activeId === heading.id
           ? "bg-blue-50/80 font-semibold text-blue-600"
-          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          : "text-gray-300 hover:bg-gray-50 hover:text-gray-900"
       } `}
       style={{ paddingLeft: `${(heading.level - 1) * 1}rem` }}
     >
@@ -195,16 +195,16 @@ export default function PostDetailPage() {
     : null;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-transparent">
       <main className="container mx-auto">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,320px] xl:gap-12">
           <article className="overflow-hidden">
             <div className="">
               <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <span className="w-fit rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-600">
+                <span className="w-fit rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-600 dark:bg-indigo-800 dark:text-indigo-300">
                   {post.categoryId}
                 </span>
-                <div className="flex items-center gap-6 text-gray-500">
+                <div className="flex items-center gap-6 text-gray-500 dark:text-gray-400">
                   <span className="flex items-center">
                     <Eye className="mr-1.5 h-[18px] w-[18px]" />
                     {post.viewCount || 0}
@@ -223,7 +223,7 @@ export default function PostDetailPage() {
                 </div>
               </div>
 
-              <h1 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+              <h1 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-3xl lg:text-4xl">
                 {post.title}
               </h1>
 
@@ -250,7 +250,7 @@ export default function PostDetailPage() {
                 </Sheet>
               </div>
 
-              <div className="mb-8 flex flex-col gap-3 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-8 flex flex-col gap-3 text-sm text-gray-500 dark:text-gray-400 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                   <span className="flex items-center">
                     <Calendar className="mr-1.5 h-4 w-4" />
@@ -262,7 +262,7 @@ export default function PostDetailPage() {
                   </span>
                 </div>
                 {formattedUpdateDate && (
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
                     최종 수정: {formattedUpdateDate}
                   </span>
                 )}
@@ -271,7 +271,7 @@ export default function PostDetailPage() {
               <div
                 ref={contentRef}
                 dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                className="prose prose-slate max-w-none prose-headings:mb-3 prose-headings:font-semibold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:font-bold prose-h3:text-xl prose-h3:font-bold prose-p:text-base prose-p:leading-relaxed prose-p:text-gray-600 prose-img:my-6 prose-img:rounded-lg prose-img:shadow-md [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                className="prose prose-slate max-w-none dark:prose-invert prose-headings:mb-3 prose-headings:font-semibold prose-h1:text-gray-900 prose-h2:text-2xl prose-h2:font-bold prose-h3:text-xl prose-h3:font-bold prose-p:text-base prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-h1:text-gray-100 dark:prose-h2:text-gray-200 dark:prose-h3:text-gray-200 dark:prose-p:text-gray-300 dark:prose-a:text-blue-400 dark:prose-strong:text-gray-200 dark:prose-code:text-rose-500 dark:prose-img:opacity-80"
               />
 
               <div className="mt-12 flex flex-wrap gap-2">
@@ -289,8 +289,8 @@ export default function PostDetailPage() {
 
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <div className="rounded-lg bg-gray-50 p-6">
-                <h2 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+                <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
                   목차
                 </h2>
                 <nav className="flex flex-col gap-1">
