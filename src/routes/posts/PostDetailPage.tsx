@@ -119,7 +119,7 @@ export default function PostDetailPage() {
       className={`group flex w-full items-center rounded-md py-2 text-left transition-all ${heading.level === 1 ? "font-bold" : "font-medium"} ${
         activeId === heading.id
           ? "bg-blue-50/80 font-semibold text-blue-600"
-          : "text-gray-300 hover:bg-gray-50 hover:text-gray-900"
+          : "hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300"
       } `}
       style={{ paddingLeft: `${(heading.level - 1) * 1}rem` }}
     >
